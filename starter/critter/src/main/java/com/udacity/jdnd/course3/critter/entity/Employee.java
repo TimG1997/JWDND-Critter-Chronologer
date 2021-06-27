@@ -21,6 +21,12 @@ public class Employee {
 
     public Employee(){}
 
+    public Employee(String name, Set<EmployeeSkill> skills, Set<DayOfWeek> daysAvailable) {
+        this.name = name;
+        this.skills = skills;
+        this.daysAvailable = daysAvailable;
+    }
+
     public Employee(Long id, String name, Set<EmployeeSkill> skills, Set<DayOfWeek> daysAvailable) {
         this.id = id;
         this.name = name;
