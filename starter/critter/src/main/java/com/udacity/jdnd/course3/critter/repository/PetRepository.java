@@ -10,4 +10,8 @@ import java.util.Set;
 @Repository
 public interface PetRepository extends CrudRepository<Pet, Long> {
     List<Pet> findAllByIdIn(List<Long> ids);
+
+    List<Pet> findAllByOwnerId(Long ownerId);
+
+
 }

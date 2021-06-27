@@ -24,6 +24,15 @@ public class Pet {
 
     private String notes;
 
+    public Pet(){}
+    public Pet(PetType type, String name, Customer owner, LocalDate birthDate, String notes) {
+        this.type = type;
+        this.name = name;
+        this.owner = owner;
+        this.birthDate = birthDate;
+        this.notes = notes;
+    }
+
     public Long getId() {
         return id;
     }
