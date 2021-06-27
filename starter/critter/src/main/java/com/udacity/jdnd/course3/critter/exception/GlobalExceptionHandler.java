@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
         } else if(entityNotFoundException instanceof CustomerNotFoundException){
             return new ApiError(HttpStatus.NOT_FOUND, String.format("Customer with id %d not found.", ((CustomerNotFoundException)entityNotFoundException).getId()));
         } else if(entityNotFoundException instanceof EmployeeNotFoundException){
-            return new ApiError(HttpStatus.NOT_FOUND, String.format("Employee with id %d not found.", ((CustomerNotFoundException)entityNotFoundException).getId()));
+            return new ApiError(HttpStatus.NOT_FOUND, String.format("Employee with id %d not found.", ((EmployeeNotFoundException)entityNotFoundException).getId()));
         } else {
             return new ApiError(HttpStatus.NOT_FOUND, "Entity not found");
         }

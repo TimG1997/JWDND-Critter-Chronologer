@@ -4,8 +4,10 @@ import com.udacity.jdnd.course3.critter.entity.Customer;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
-    Customer findByPetsId(Long petId);
+    Optional<Customer> findByPetsId(Long petId);
 }

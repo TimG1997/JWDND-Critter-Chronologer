@@ -7,6 +7,7 @@ import com.udacity.jdnd.course3.critter.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
@@ -24,14 +25,17 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    @Transactional
     public Employee saveEmployee(Employee employee){
         return this.employeeRepository.save(employee);
     }
 
+    @Transactional
     public List<Employee> getEmployees(List<Long> employeeIds){
         return (List<Employee>) this.employeeRepository.findAllById(employeeIds);
     }
 
+    @Transactional
     public Employee getEmployee(Long id){
         Optional<Employee> employeeOptional = this.employeeRepository.findById(id);
 
@@ -42,6 +46,7 @@ public class EmployeeService {
         }
     }
 
+    @Transactional
     public List<Employee> getEmployeesForService(Set<EmployeeSkill> skills, LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         List<Employee> allByDaysAvailable = this.employeeRepository.findAllByDaysAvailable(dayOfWeek);
