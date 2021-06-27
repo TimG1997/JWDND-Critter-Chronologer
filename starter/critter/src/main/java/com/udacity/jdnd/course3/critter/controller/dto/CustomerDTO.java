@@ -1,4 +1,4 @@
-package com.udacity.jdnd.course3.critter.user;
+package com.udacity.jdnd.course3.critter.controller.dto;
 
 import com.udacity.jdnd.course3.critter.entity.Customer;
 
