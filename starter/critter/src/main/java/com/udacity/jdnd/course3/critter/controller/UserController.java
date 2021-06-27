@@ -1,8 +1,10 @@
 package com.udacity.jdnd.course3.critter.controller;
 
 import com.udacity.jdnd.course3.critter.entity.Customer;
+import com.udacity.jdnd.course3.critter.entity.Employee;
 import com.udacity.jdnd.course3.critter.entity.Pet;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
+import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import com.udacity.jdnd.course3.critter.service.PetService;
 import com.udacity.jdnd.course3.critter.controller.dto.CustomerDTO;
 import com.udacity.jdnd.course3.critter.controller.dto.EmployeeDTO;
@@ -27,11 +29,13 @@ public class UserController {
 
     private final CustomerService customerService;
     private final PetService petService;
+    private final EmployeeService employeeService;
 
     @Autowired
-    public UserController(CustomerService customerService, PetService petService) {
+    public UserController(CustomerService customerService, PetService petService, EmployeeService employeeService) {
         this.customerService = customerService;
         this.petService = petService;
+        this.employeeService = employeeService;
     }
 
     @PostMapping("/customer")
@@ -39,11 +43,11 @@ public class UserController {
         Customer createdCustomer;
 
         if (customerDTO.getPetIds() != null) {
-            Set<Pet> pets = this.petService.getPetsForIds(customerDTO.getPetIds());
+            List<Pet> pets = this.petService.getPetsForIds(customerDTO.getPetIds());
             Customer customer = new Customer(customerDTO.getName(), customerDTO.getPhoneNumber(), customerDTO.getNotes(), pets);
-            createdCustomer = this.customerService.createCustomer(customer);
+            createdCustomer = this.customerService.saveCustomer(customer);
         } else {
-            createdCustomer = this.customerService.createCustomer(new Customer(customerDTO.getName(), customerDTO.getPhoneNumber(), customerDTO.getNotes()));
+            createdCustomer = this.customerService.saveCustomer(new Customer(customerDTO.getName(), customerDTO.getPhoneNumber(), customerDTO.getNotes()));
         }
 
         customerDTO.setId(createdCustomer.getId());
@@ -54,34 +58,50 @@ public class UserController {
     @GetMapping("/customer")
     public List<CustomerDTO> getAllCustomers() {
         return this.customerService.getAllCustomers().stream().map(customer -> {
-            List<Long> petIds = customer.getPets().stream().map(pet -> pet.getId()).collect(Collectors.toList());
+            List<Long> petIds = customer.getPets().stream().map(Pet::getId).collect(Collectors.toList());
             return new CustomerDTO(customer.getId(), customer.getName(), customer.getPhoneNumber(), customer.getNotes(), petIds);
         }).collect(Collectors.toList());
     }
 
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable long petId) {
-        throw new UnsupportedOperationException();
+        Customer customer = this.customerService.getCustomerByPet(petId);
+        List<Long> petIds = customer.getPets().stream().map(Pet::getId).collect(Collectors.toList());
+        return new CustomerDTO(customer.getId(), customer.getName(), customer.getPhoneNumber(), customer.getNotes(), petIds);
     }
 
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+        Employee employee = new Employee(employeeDTO.getName(), employeeDTO.getSkills(), employeeDTO.getDaysAvailable());
+        Employee createdEmployee = this.employeeService.saveEmployee(employee);
+        employeeDTO.setId(createdEmployee.getId());
+        return employeeDTO;
     }
 
     @PostMapping("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        Employee employee = this.employeeService.getEmployee(employeeId);
+        EmployeeDTO employeeDTO = new EmployeeDTO(employee.getId(), employee.getName(), employee.getSkills(), employee.getDaysAvailable());
+        return employeeDTO;
     }
 
     @PutMapping("/employee/{employeeId}")
     public void setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        Employee employee = this.employeeService.getEmployee(employeeId);
+        employee.setDaysAvailable(daysAvailable);
+        this.employeeService.saveEmployee(employee);
     }
 
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+        List<Employee> employees = this.employeeService.getEmployeesForService(employeeDTO.getSkills(), employeeDTO.getDate());
+        return employees.stream().
+                map(employee -> new EmployeeDTO(
+                                                employee.getId(),
+                                                employee.getName(),
+                                                employee.getSkills(),
+                                                employee.getDaysAvailable()))
+                .collect(Collectors.toList());
     }
 
 }

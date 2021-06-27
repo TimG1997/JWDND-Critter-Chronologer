@@ -1,6 +1,7 @@
 package com.udacity.jdnd.course3.critter.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,10 +17,12 @@ public class Customer {
     private String phoneNumber;
     private String notes;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private Set<Pet> pets;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Pet> pets;
 
-    public Customer(String name, String phoneNumber, String notes, Set<Pet> pets) {
+    public Customer(){}
+
+    public Customer(String name, String phoneNumber, String notes, List<Pet> pets) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.notes = notes;
@@ -30,7 +33,7 @@ public class Customer {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.notes = notes;
-        this.pets = new HashSet<>();
+        this.pets = new ArrayList<>();
     }
 
     public Long getId() {
@@ -65,11 +68,11 @@ public class Customer {
         this.notes = notes;
     }
 
-    public Set<Pet> getPets() {
+    public List<Pet> getPets() {
         return pets;
     }
 
-    public void setPets(Set<Pet> pets) {
+    public void setPets(List<Pet> pets) {
         this.pets = pets;
     }
 }
